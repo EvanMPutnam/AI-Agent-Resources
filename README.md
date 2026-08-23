@@ -6,14 +6,21 @@ every session on this machine.
 
 ## Contents
 
-| File | What it covers | Applies to |
-|---|---|---|
-| `common/writing.md` | Orwell's six rules, and the LLM prose tics to strip out | every project |
-| `common/coding-rules.md` | Naming, comments, abstraction, errors, tests, design docs | every project |
-| `common/NASA-flight-software.md` | Holzmann's Power of 10 | specific projects |
+`common/` is global. `sync.sh` compiles it into `~/.claude/CLAUDE.md`, and it applies to
+everything.
 
-The first two are what `sync.sh` installs globally. The third is copied into a project by
-hand when that project needs it.
+| File | What it covers |
+|---|---|
+| `common/writing.md` | Orwell's six rules, and the LLM prose tics to strip out |
+| `common/coding-rules.md` | Naming, comments, abstraction, errors, tests, design docs |
+
+`custom/` is per-project. Nothing here is installed globally — a project that wants one of
+these files copies it into that project's own `CLAUDE.md`.
+
+| File | What it covers | Adopt it when |
+|---|---|---|
+| `custom/NASA-flight-software.md` | Holzmann's Power of 10 | The code cannot be patched after it ships, or one defect costs more than the rules do |
+| `custom/rust-rules.md` | Errors, types, unsafe, concurrency, lints, CI gate | The project is written in Rust |
 
 ## Usage
 
@@ -36,22 +43,32 @@ file in `common/` fails loudly.
 
 ## Adding a file
 
-Drop it in `common/` and add its name to `SOURCES` in `sync.sh`. Order in the array is
-order in the output.
+A rule that applies everywhere goes in `common/`, and its name goes in the `SOURCES`
+array in `sync.sh`. Order in the array is order in the output.
 
-## Why NASA is not global
+A rule that applies to one language or one class of project goes in `custom/` and stays
+out of `SOURCES`.
 
-`writing.md` and `coding-rules.md` apply to everything I write, so they belong in the
-global file. `NASA-flight-software.md` does not. Holzmann wrote the Power of 10 for C
-that flies on spacecraft and cannot be patched after launch, and the rules cost more
-than most projects can justify — no dynamic allocation, no recursion, two assertions per
-function.
+## Why custom rules stay out of the global file
 
-A project that does justify them adopts the file whole, by copying it into that
-project's own `CLAUDE.md`. Taking a rule here and there defeats the point: the list works
-because a static analyzer can check every rule.
+A global file is read on every session, so anything in it has to be true everywhere.
+`writing.md` and `coding-rules.md` qualify. The rest do not, for two different reasons.
+
+`NASA-flight-software.md` is too expensive. Holzmann wrote the Power of 10 for C that
+flies on spacecraft and cannot be patched after launch, and no dynamic allocation, no
+recursion, and two assertions per function cost more than most projects can justify.
+
+`rust-rules.md` is too specific. A rule about `unwrap()` is noise in a Python project,
+and rules that never apply teach the model to skim the ones that do.
+
+Each is adopted whole, by copying it into a project's own `CLAUDE.md`. Taking a rule
+here and there defeats the point: both lists work because a tool can check every entry,
+and a half-adopted list goes back to being a matter of opinion.
 
 ## Editing
 
 Edit the files in `common/`, then rerun `sync.sh`. The generated `CLAUDE.md` carries a
 comment saying so, and the next sync overwrites anything you change there.
+
+Files in `custom/` are copied by hand, so a project holds a snapshot rather than a live
+link.

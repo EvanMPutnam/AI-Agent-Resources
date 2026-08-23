@@ -6,7 +6,7 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SRC_DIR="$REPO_DIR/common"
 DEST="${CLAUDE_HOME:-$HOME/.claude}/CLAUDE.md"
 
-# Files to include, in order. NASA-flight-software.md is deliberately excluded.
+# Files to include, in order. Everything in custom/ is per-project and stays out.
 SOURCES=(
   "writing.md"
   "coding-rules.md"

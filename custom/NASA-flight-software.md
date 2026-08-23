@@ -1,6 +1,6 @@
 # 1. NASA Flight Software Rules
 
-Gerard Holzmann wrote the Power of 10 at NASA's Jet Propulsion Laboratory in 2006, for C code that runs on spacecraft. The rules are stricter than anything in [coding-rules.md](coding-rules.md), and some of them contradict it.
+Gerard Holzmann wrote the Power of 10 at NASA's Jet Propulsion Laboratory in 2006, for C code that runs on spacecraft. The rules are stricter than anything in [coding-rules.md](../common/coding-rules.md), and some of them contradict it.
 
 This file is not global. A project adopts it whole or not at all. If there are competing rules, this is authoritative.
 
